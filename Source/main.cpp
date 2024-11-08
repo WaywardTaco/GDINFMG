@@ -9,5 +9,7 @@ int main(){
     else if(__cplusplus == 201402L)
         std::cout << "C++14" << std::endl;
 
+    std::cout << "Hello" << std::endl;
+
     return 0;
 }
