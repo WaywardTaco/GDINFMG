@@ -13,7 +13,7 @@ end
 
 
 target("GDINFMG")
-	set_kind("static")
+	set_kind("binary")
 	set_languages("c++20")
 	set_runtimes("MT")
 
