@@ -1,3 +1,0 @@
-call xmake -b
-
-PAUSE
