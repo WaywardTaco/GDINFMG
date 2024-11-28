@@ -743,8 +743,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   montiorTextField: {fileID: 105304921}
-  monitorText: 
-  debugUpdateText: 0
+  savedMonitorText: Sample monitor text
+  lastMonitorText: 
+  inputText: 
+  isTakingInput: 1
+  isMirroringInput: 1
+  isDebugMode: 1
+  awaitingInputDisplayUnderscorePeriod: 0.5
+  currentInputListeners:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &228147150
 Transform:
   m_ObjectHideFlags: 0

@@ -15,9 +15,12 @@ public class MonitorTextManager : MonoBehaviour
     [SerializeField] private string inputText;
     [SerializeField] private bool isTakingInput = false;
     [SerializeField] private bool isMirroringInput = false;
-    [SerializeField] private bool debugUpdateText;
+    [SerializeField] private bool isDebugMode;
+    [SerializeField] private float awaitingInputDisplayUnderscorePeriod;
     [SerializeField] private UnityEvent<string> currentInputListeners;
     private bool willEatInput = false;
+    private bool awaitingInputDisplayUnderscore = false;
+    private bool flippingInputCoroutineStarted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -32,14 +35,24 @@ public class MonitorTextManager : MonoBehaviour
             Instance = null;
     }
     public void Update(){
-        if(debugUpdateText){
-            debugUpdateText = false;
-            this.SetMonitorText(this.savedMonitorText);
-        }
+        // if(isDebugMode){
+        //     this.SetMonitorText(this.savedMonitorText);
+        // }
         if(isTakingInput)
             this.HandleInputs();
-        if(isMirroringInput)
-            this.AppendText(this.inputText, false);
+        if(isMirroringInput){
+            if(this.isTakingInput){
+                if(awaitingInputDisplayUnderscore){
+                    this.AppendText(this.inputText + "_", false);
+                    this.StartCoroutine(this.FlipDisplayInputUnderscore());
+                }
+                else {
+                    this.AppendText(this.inputText, false);
+                    this.StartCoroutine(this.FlipDisplayInputUnderscore());
+                }
+            } else
+                this.AppendText(this.inputText, false);
+        }
     }
 
     public void SetMonitorText(string text, bool saveText = true){
@@ -95,6 +108,16 @@ public class MonitorTextManager : MonoBehaviour
     }
     public string GetText(){
         return this.savedMonitorText;
+    }
+
+    private IEnumerator FlipDisplayInputUnderscore(){
+        if(flippingInputCoroutineStarted)
+            yield break;
+
+        flippingInputCoroutineStarted = true;
+        yield return new WaitForSeconds(awaitingInputDisplayUnderscorePeriod);
+        awaitingInputDisplayUnderscore = !awaitingInputDisplayUnderscore;
+        flippingInputCoroutineStarted = false;
     }
 
     private void HandleInputs(){
@@ -153,10 +176,137 @@ public class MonitorTextManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
             this.inputText += " ";
-        if(Input.GetKeyDown(KeyCode.Return))
+        if(Input.GetKeyDown(KeyCode.Return)){
+            if(isDebugMode)
+                this.inputText += "\n";
+            else
+                this.SubmitInput();
+        }
+        if(Input.GetKeyDown(KeyCode.KeypadEnter))
             this.SubmitInput();
-            // this.inputText += "\n";
         if(Input.GetKeyDown(KeyCode.Backspace))
             this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
+
+        if(!isDebugMode) return;
+
+        if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)){
+            if(Input.GetKeyDown(KeyCode.BackQuote))
+                this.inputText += "~";
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+                this.inputText += "!";
+            if(Input.GetKeyDown(KeyCode.Alpha2))
+                this.inputText += "@";
+            if(Input.GetKeyDown(KeyCode.Alpha3))
+                this.inputText += "#";
+            if(Input.GetKeyDown(KeyCode.Alpha4))
+                this.inputText += "$";
+            if(Input.GetKeyDown(KeyCode.Alpha5))
+                this.inputText += "%";
+            if(Input.GetKeyDown(KeyCode.Alpha6))
+                this.inputText += "^";
+            if(Input.GetKeyDown(KeyCode.Alpha7))
+                this.inputText += "&";
+            if(Input.GetKeyDown(KeyCode.Alpha8))
+                this.inputText += "*";
+            if(Input.GetKeyDown(KeyCode.Alpha9))
+                this.inputText += "(";
+            if(Input.GetKeyDown(KeyCode.Alpha0))
+                this.inputText += ")";
+            if(Input.GetKeyDown(KeyCode.Minus))
+                this.inputText += "_";
+            if(Input.GetKeyDown(KeyCode.Equals))
+                this.inputText += "+";
+            if(Input.GetKeyDown(KeyCode.LeftBracket))
+                this.inputText += "{";
+            if(Input.GetKeyDown(KeyCode.RightBracket))
+                this.inputText += "}";
+            if(Input.GetKeyDown(KeyCode.Backslash))
+                this.inputText += "|";
+            if(Input.GetKeyDown(KeyCode.Semicolon))
+                this.inputText += ":";
+            if(Input.GetKeyDown(KeyCode.Quote))
+                this.inputText += "\"";
+            if(Input.GetKeyDown(KeyCode.Comma))
+                this.inputText += "<";
+            if(Input.GetKeyDown(KeyCode.Period))
+                this.inputText += ">";
+            if(Input.GetKeyDown(KeyCode.Slash))
+                this.inputText += "?";
+        } else {
+            if(Input.GetKeyDown(KeyCode.BackQuote))
+                this.inputText += "`"; 
+            if(Input.GetKeyDown(KeyCode.Alpha0))
+                this.inputText += "0";
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+                this.inputText += "1";
+            if(Input.GetKeyDown(KeyCode.Alpha2))
+                this.inputText += "2";
+            if(Input.GetKeyDown(KeyCode.Alpha3))
+                this.inputText += "3";
+            if(Input.GetKeyDown(KeyCode.Alpha4))
+                this.inputText += "4";
+            if(Input.GetKeyDown(KeyCode.Alpha5))
+                this.inputText += "5";
+            if(Input.GetKeyDown(KeyCode.Alpha6))
+                this.inputText += "6";
+            if(Input.GetKeyDown(KeyCode.Alpha7))
+                this.inputText += "7";
+            if(Input.GetKeyDown(KeyCode.Alpha8))
+                this.inputText += "8";
+            if(Input.GetKeyDown(KeyCode.Alpha9))
+                this.inputText += "9";
+            if(Input.GetKeyDown(KeyCode.LeftBracket))
+                this.inputText += "[";
+            if(Input.GetKeyDown(KeyCode.RightBracket))
+                this.inputText += "]";
+            if(Input.GetKeyDown(KeyCode.Minus))
+                this.inputText += "-";
+            if(Input.GetKeyDown(KeyCode.Equals))
+                this.inputText += "=";
+            if(Input.GetKeyDown(KeyCode.Period))
+                this.inputText += ".";
+            if(Input.GetKeyDown(KeyCode.Slash))
+                this.inputText += "/";
+            if(Input.GetKeyDown(KeyCode.Backslash))
+                this.inputText += "\\";
+            if(Input.GetKeyDown(KeyCode.Semicolon))
+                this.inputText += ";";
+            if(Input.GetKeyDown(KeyCode.Quote))
+                this.inputText += "\'";
+            if(Input.GetKeyDown(KeyCode.Comma))
+                this.inputText += ",";
+        }
+
+        if(Input.GetKeyDown(KeyCode.KeypadPlus))
+            this.inputText += "+";
+        if(Input.GetKeyDown(KeyCode.KeypadMinus))
+            this.inputText += "-";
+        if(Input.GetKeyDown(KeyCode.KeypadPeriod))
+            this.inputText += ".";
+        if(Input.GetKeyDown(KeyCode.KeypadMultiply))
+            this.inputText += "*";
+        if(Input.GetKeyDown(KeyCode.KeypadDivide))
+            this.inputText += "/";
+        if(Input.GetKeyDown(KeyCode.Keypad0))
+            this.inputText += "0";
+        if(Input.GetKeyDown(KeyCode.Keypad1))
+            this.inputText += "1";
+        if(Input.GetKeyDown(KeyCode.Keypad2))
+            this.inputText += "2";
+        if(Input.GetKeyDown(KeyCode.Keypad3))
+            this.inputText += "3";
+        if(Input.GetKeyDown(KeyCode.Keypad4))
+            this.inputText += "4";
+        if(Input.GetKeyDown(KeyCode.Keypad5))
+            this.inputText += "5";
+        if(Input.GetKeyDown(KeyCode.Keypad6))
+            this.inputText += "6";
+        if(Input.GetKeyDown(KeyCode.Keypad7))
+            this.inputText += "7";
+        if(Input.GetKeyDown(KeyCode.Keypad8))
+            this.inputText += "8";
+        if(Input.GetKeyDown(KeyCode.Keypad9))
+            this.inputText += "9";
+
     }
 }
