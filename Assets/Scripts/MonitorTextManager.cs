@@ -38,6 +38,10 @@ public class MonitorTextManager : MonoBehaviour
         // if(isDebugMode){
         //     this.SetMonitorText(this.savedMonitorText);
         // }
+        if(Input.GetKeyDown(KeyCode.KeypadEnter) || this.isDebugMode){
+            this.isTakingInput = true;
+            this.isMirroringInput = true;
+        }
         if(isTakingInput)
             this.HandleInputs();
         if(isMirroringInput){
@@ -179,17 +183,13 @@ public class MonitorTextManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Return)){
             if(isDebugMode)
                 this.inputText += "\n";
-            else if (isTakingInput)
+            else
                 this.SubmitInput();
         }
         if(Input.GetKeyDown(KeyCode.KeypadEnter)){
-            if(isTakingInput){
+            if(isDebugMode)
                 this.willEatInput = true;
-                this.SubmitInput();
-            } else {
-                this.isTakingInput = true;
-                this.isMirroringInput = true;
-            }
+            this.SubmitInput();
         }
         if(Input.GetKeyDown(KeyCode.Backspace))
             this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
