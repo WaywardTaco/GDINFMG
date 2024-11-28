@@ -179,7 +179,7 @@ public class MonitorTextManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Return)){
             if(isDebugMode)
                 this.inputText += "\n";
-            else
+            else if (isTakingInput)
                 this.SubmitInput();
         }
         if(Input.GetKeyDown(KeyCode.KeypadEnter)){
