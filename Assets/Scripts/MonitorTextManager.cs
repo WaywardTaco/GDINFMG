@@ -38,12 +38,13 @@ public class MonitorTextManager : MonoBehaviour
         // if(isDebugMode){
         //     this.SetMonitorText(this.savedMonitorText);
         // }
-        if(Input.GetKeyDown(KeyCode.KeypadEnter) || this.isDebugMode){
-            this.isTakingInput = true;
-            this.isMirroringInput = true;
-        }
         if(isTakingInput)
             this.HandleInputs();
+        if(Input.GetKeyDown(KeyCode.KeypadEnter) && this.isDebugMode){
+            this.isTakingInput = true;
+            this.isMirroringInput = true;
+            this.ClearTerminal();
+        }
         if(isMirroringInput){
             if(this.isTakingInput){
                 if(awaitingInputDisplayUnderscore){
@@ -85,6 +86,9 @@ public class MonitorTextManager : MonoBehaviour
 
     public void RevertToLastText(bool saveText = true){
         this.SetMonitorText(this.lastMonitorText, saveText);
+    }
+    public void ClearTerminal(bool saveText = true){
+        this.SetMonitorText("", saveText);
     }
 
     public void AwaitUserInput(UnityAction<string> callbackFunction, bool eatInput = true){
