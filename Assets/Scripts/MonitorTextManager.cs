@@ -17,6 +17,7 @@ public class MonitorTextManager : MonoBehaviour
     [SerializeField] private bool isMirroringInput = false;
     [SerializeField] private bool debugUpdateText;
     [SerializeField] private UnityEvent<string> currentInputListeners;
+    private bool willEatInput = false;
 
     // Start is called before the first frame update
     void Start()
@@ -69,10 +70,13 @@ public class MonitorTextManager : MonoBehaviour
         this.SetMonitorText(this.lastMonitorText, saveText);
     }
 
-    public void AwaitUserInput(UnityAction<string> callbackFunction){
+    public void AwaitUserInput(UnityAction<string> callbackFunction, bool eatInput = true){
         this.currentInputListeners.AddListener(callbackFunction);
         this.isTakingInput = true;
         this.isMirroringInput = true;
+
+        // Done so that the input is eaten if any of the awaiting methods are set to eat inputs
+        if(eatInput) willEatInput = true;
     }
 
     private void SubmitInput(){
@@ -81,6 +85,9 @@ public class MonitorTextManager : MonoBehaviour
         this.isMirroringInput = false;
 
         this.currentInputListeners.Invoke(this.inputText);
+        this.currentInputListeners.RemoveAllListeners();
+
+        if(this.willEatInput) this.inputText = "";
     }
 
     private string FormatText(string text){
