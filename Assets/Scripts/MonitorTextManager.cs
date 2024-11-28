@@ -182,8 +182,15 @@ public class MonitorTextManager : MonoBehaviour
             else
                 this.SubmitInput();
         }
-        if(Input.GetKeyDown(KeyCode.KeypadEnter))
-            this.SubmitInput();
+        if(Input.GetKeyDown(KeyCode.KeypadEnter)){
+            if(isTakingInput){
+                this.willEatInput = true;
+                this.SubmitInput();
+            } else {
+                this.isTakingInput = true;
+                this.isMirroringInput = true;
+            }
+        }
         if(Input.GetKeyDown(KeyCode.Backspace))
             this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
 
