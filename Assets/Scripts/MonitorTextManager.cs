@@ -38,7 +38,7 @@ public class MonitorTextManager : MonoBehaviour
         // if(isDebugMode){
         //     this.SetMonitorText(this.savedMonitorText);
         // }
-        if(!isTakingInput)
+        if(isTakingInput)
             this.HandleInputs();
         if(Input.GetKeyDown(KeyCode.KeypadEnter) && this.isDebugMode){
             this.isTakingInput = true;
@@ -130,7 +130,7 @@ public class MonitorTextManager : MonoBehaviour
 
     private void HandleInputs()
     {
-        this.inputText = Input.inputString;
+        this.inputText += Input.inputString;
         if (inputText.Equals(""))
             return;
         Debug.Log(this.inputText);
