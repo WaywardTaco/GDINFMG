@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Mysqlx.Crud;
+using Org.BouncyCastle.Crypto.Digests;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -130,8 +131,12 @@ public class MonitorTextManager : MonoBehaviour
 
     private void HandleInputs()
     {
-        this.inputText += Input.inputString;
-        if (inputText.Equals(""))
+        foreach (char c in Input.inputString)
+        {
+            if(!char.IsControl(c))
+                this.inputText += c;
+        }
+        if (string.IsNullOrEmpty(this.inputText))
             return;
         Debug.Log(this.inputText.Length);
         //if (Input.GetKeyDown(KeyCode.Q))
@@ -202,8 +207,12 @@ public class MonitorTextManager : MonoBehaviour
                 this.willEatInput = true;
             this.SubmitInput();
         }
-        if(Input.GetKeyDown(KeyCode.Backspace))
-            this.inputText = this.inputText.Substring(0, this.inputText.Length - 2);
+        if (Input.GetKeyDown(KeyCode.Backspace) && this.inputText.Length > 0)
+        {
+
+            this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
+           
+        }
 
         if (!isDebugMode) return;
 
