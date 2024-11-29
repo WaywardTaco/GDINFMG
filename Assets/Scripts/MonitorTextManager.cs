@@ -133,7 +133,7 @@ public class MonitorTextManager : MonoBehaviour
         this.inputText += Input.inputString;
         if (inputText.Equals(""))
             return;
-        Debug.Log(this.inputText);
+        Debug.Log(this.inputText.Length);
         //if (Input.GetKeyDown(KeyCode.Q))
         //    this.inputText += "Q";
         //if(Input.GetKeyDown(KeyCode.W))
@@ -189,21 +189,23 @@ public class MonitorTextManager : MonoBehaviour
 
         //if(Input.GetKeyDown(KeyCode.Space))
         //    this.inputText += " ";
-        //if(Input.GetKeyDown(KeyCode.Return)){
-        //    if(isDebugMode)
-        //        this.inputText += "\n";
-        //    else
-        //        this.SubmitInput();
-        //}
-        //if(Input.GetKeyDown(KeyCode.KeypadEnter)){
-        //    if(isDebugMode)
-        //        this.willEatInput = true;
-        //    this.SubmitInput();
-        //}
-        //if(Input.GetKeyDown(KeyCode.Backspace))
-        //    this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (isDebugMode)
+                this.inputText += "\n";
+            else
+                this.SubmitInput();
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (isDebugMode)
+                this.willEatInput = true;
+            this.SubmitInput();
+        }
+        if(Input.GetKeyDown(KeyCode.Backspace))
+            this.inputText = this.inputText.Substring(0, this.inputText.Length - 2);
 
-        //if(!isDebugMode) return;
+        if (!isDebugMode) return;
 
         //if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)){
         //    if(Input.GetKeyDown(KeyCode.BackQuote))
