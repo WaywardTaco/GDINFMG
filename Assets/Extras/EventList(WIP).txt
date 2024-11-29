@@ -1,0 +1,59 @@
+
+01
+estbrz terminal v2.1.3\n\nWelcome to EastBreeze\n\nUsername:
+/> enters user name >> ${name} -> 02
+
+02
+estbrz terminal v2.1.3\n\nWelcome to EastBreeze\n\nUsername:${name}\nPassword:
+/> enters password -> 03
+
+03
+estbrz terminal v2.1.3\n\n!! news !!\n+southwind industries lobbies for relaxed trade regulations with europe...\n=====================================================\n'i know that that is just a stunt for them to open up their arms dealing op with russia... i have to stop them...but what should i target first?'\n\n* continue reading the article\n* search the darkweb for dirt on Southwind\n>
+/> enter *1 -> 04 | enter *2 ->05
+
+04
+!! NEWS !!\n+southwind industries lobbies for relaxed trade regulations with Europe\n\nwith rising tensions in europe, southwind hopes to increase medicine exports to the region with the motto 'for peace, anything is worth trying'\n=====================================================\n'anything? that includes illegal arms trafficking? well, if that's their play, i must stop them. i'll look up dirt on the dark web...'\n
+/> presses enter -> 06 (Get Southwind Motto)
+
+05
+north door - dark web browser \nresults for "southwind":\n+forum thread:
+  g.e.o.- "looking for fellows willing to join our campaign against southwind... reply if interested"\n=====================================================\n'looks like i'm not the only one that has a bone to pick... maybe i should reply?'\n
+/> presses enter -> 06 (Get GEO contact)
+
+06
+estbrz terminal v2.1.3\n!! system notification !!\nWe see you\ndo not fear...\nwe noticed your snooping...\njoin us against southwind\n-g.e.o.\n\nwill you join?\nwhat is your answer?\n>
+/> Yes -> 07 | No -> 08
+
+07
+estbrz terminal v2.1.3\n!! system notification !!\nwe are glad...\nyour first target is central axis, one of southwind's subsidiaries that fund their lobbying in secret, take them out and we stop whatever plans they have\n-g.e.o.\n=====================================================\n'ah, central axis, they do seem shady... should i go after them?'\n>
+/> Yes -> 09 | No -> 08
+
+08
+estbrz terminal v2.1.3\n!! system notification !!\nwe are disappointed in your actions...\n-g.e.o.\n=====================================================\n'looks like i angered them... i should do something'\n* enable system lockdown protocols\n* attempt to hack g.e.o.\n>
+/> enter *1 -> 10 | enter *2 -> 11
+
+09
+estbrz terminal v2.1.3\n...attempting backdoor: central axis...\n!! connection success !!\ndatabase logs:\n+transaction with 'parent'\n  $1.2m transferred to 'parent' for lobby funds, non-traceable transfer process begins monday...\n=====================================================\n'monday? thats today? should i intercept the funds? or maybe i could expose this info to the public?'\n* intercept the funds\n* expose info to public\n>
+/> enter *1 -> 12 | enter *2 -> 16
+
+10
+estbrz terminal v2.1.3\n...attempting lockdown protocol...\n!! lockdown failed !!\n!! system notification !!\nyou thought that would work?\ntough luck, we already got into your system...\nwe sent the s.w.a.t. your way, we pinned you for terrorism, if you're lucky you'll get only 50 years, if not... well... you know...\n-g.e.o.\n
+/> press enter -> 13
+
+11 geo fight
+estbrz terminal v2.1.3\n...attempting backdoor: g.e.o. main server...\n!! connection success !!\n=====================================================\n'that... was surprisingly easy...what should i do?'\n* attempt locking down g.e.o.\n* investigate g.e.o.'s records\n>
+/> enter *1 -> 10 | enter *2 -> 15
+
+12 intercept funds -> public or join Southwind or defeat southwin
+
+13
+estbrz terminal v2.1.3\n!! news !!\n+swat pins f.b.i. hacker after months long investigation\n\nin a violent shootout on monday around midnight, a discovered hacker and terrorist was shot by swat operatives, they were dead on arrival at the local southwind hospital\n
+/> press enter -> 14
+
+14
+estbrz terminal v2.1.3\n...connection terminated...\n
+/> press enter -> 01
+
+15 geo records -> join Southwind or turn geo (use geo contact or Southwind motto)
+
+16 expose info to public -> fbi or public
