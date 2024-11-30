@@ -17,7 +17,8 @@ public class DatabaseManager : MonoBehaviour
     }
     private void OnDestroy() {
         if(Instance == this){
-            connection.Close();
+            if(connection != null)
+                connection.Close();
             Instance = null;
         }
     }
