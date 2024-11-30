@@ -21,20 +21,12 @@ public class GameEventManager : MonoBehaviour
     private void loadEvent(int eventID){
         if(eventID == -1) eventID = 1;
 
-        // TODO : Load basic event info from the database given the eventID
-        GameEvent tempEvent = new GameEvent{
-            text = "Pancakes",
-            displayChoices = true,
-            awaitsChoice = true
-        };
+        // Finds the event with correct Event ID
+        GameEvent gameEvent = DatabaseManager.Instance.Connection().Query<GameEvent>(
+            $"SELECT * FROM events WHERE id = {eventID}"
+        )[0];
 
-
-
-
-
-
-
-        if (tempEvent.awaitsChoice){
+        if (gameEvent.awaitsChoice){
             defaultNextEventID = -1;
             currentEventChoices = loadEventChoices();
         } else {
@@ -48,7 +40,7 @@ public class GameEventManager : MonoBehaviour
 
         }
 
-        this.currentEvent = tempEvent;
+        this.currentEvent = gameEvent;
         displayCurrentEvent();
     }
 
@@ -186,12 +178,6 @@ public class GameEventManager : MonoBehaviour
             }
         }
         return -1;
-    }
-
-    private struct GameEvent {
-        public string text;
-        public bool displayChoices;
-        public bool awaitsChoice;
     }
 
     private struct EventChoice {
