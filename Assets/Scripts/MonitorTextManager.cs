@@ -24,7 +24,7 @@ public class MonitorTextManager : MonoBehaviour
     private bool flippingInputCoroutineStarted = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if(Instance == null)
             Instance = this;

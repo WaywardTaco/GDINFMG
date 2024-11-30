@@ -13,6 +13,10 @@ public class GameEventManager : MonoBehaviour
     void Start(){
         loadEvent(1);
     }
+
+    private void Update() {
+        Debug.Log("Event: " + currentEvent.text + " | " + currentEventChoices[0].targetEventID + " | " + currentEventChoices[0].keywords );
+    }
     
     private void loadEvent(int eventID){
         if(eventID == -1) eventID = 1;
@@ -28,7 +32,7 @@ public class GameEventManager : MonoBehaviour
 
 
 
-        
+
 
         if (tempEvent.awaitsChoice){
             defaultNextEventID = -1;
@@ -63,8 +67,8 @@ public class GameEventManager : MonoBehaviour
             List<int> rewardList = loadRewardedItems(tempChoiceID);
 
             EventChoice tempEvent = new EventChoice{
-                text = "",
-                targetEventID = 5,
+                text = "words",
+                targetEventID = -1,
                 keywords = choiceKeywords,
                 requiredItemIDs = requiredList,
                 rewardedItemIDs = rewardList
@@ -94,7 +98,7 @@ public class GameEventManager : MonoBehaviour
         List<int> requiredList = new List<int>();
         
         // TODO : Load required item ids from database
-        requiredList.Add(1);
+        // requiredList.Add(1);
 
 
 
@@ -126,18 +130,26 @@ public class GameEventManager : MonoBehaviour
 
         if(currentEvent.awaitsChoice){
             displayText += ">";
-            monitor.AwaitUserInput(processEventInput);
-        }
+            monitor.SetMonitorText(displayText);
+            StartCoroutine(delayedAwaitInput());
+        } else 
+            monitor.SetMonitorText(displayText);
+    }
+
+    private IEnumerator delayedAwaitInput(){
+        yield return new WaitForEndOfFrame();
+        MonitorTextManager.Instance.AwaitUserInput(processEventInput);
     }
 
     public void processEventInput(string input){
-        if(!currentEvent.awaitsChoice){
+        if(!currentEvent.awaitsChoice || currentEventChoices.Count == 0){
             loadEvent(defaultNextEventID);
             return;
         }
 
         int chosenEventIndex = validateInputToChoiceIndex(input);
         if(chosenEventIndex == -1){
+            Debug.Log("Invalid User Input");
             displayCurrentEvent();
             return;
         }
@@ -147,6 +159,7 @@ public class GameEventManager : MonoBehaviour
             PlayerItemManager.Instance.giveItem(itemID);
         }
         
+        Debug.Log("Loading: " + chosenEvent.targetEventID);
         loadEvent(chosenEvent.targetEventID);
     }
 
@@ -165,6 +178,7 @@ public class GameEventManager : MonoBehaviour
         int length = currentEventChoices.Count;
         for(int i = 0; i < length; i++){
             EventChoice eventChoice = currentEventChoices[i];
+            if(!playerHasChoiceRequirements(eventChoice)) continue;
             foreach(string keyword in eventChoice.keywords){
                 foreach(string word in inputWords){
                     if(String.Compare(word, keyword, true) == 0) return i;

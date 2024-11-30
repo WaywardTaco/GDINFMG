@@ -7,7 +7,7 @@ public class PlayerItemManager : MonoBehaviour
     public static PlayerItemManager Instance { get; private set;}
     [SerializeField] private Dictionary<int, int> itemCounts = new Dictionary<int, int>();
 
-    private void Update() {
+    private void Awake() {
         if (Instance == null)
             Instance = this;
         else 
