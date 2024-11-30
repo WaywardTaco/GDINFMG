@@ -26,6 +26,18 @@ public class DatabaseManager : MonoBehaviour
         connection = new SQLiteConnection(databasePath);
         if(connection == null) return;
         
-        // CREAT TABLES BELOW
+        // CREATE TABLES BELOW
+        connection.CreateTable<GameEvent>();
+        connection.CreateTable<Choice>();
+        connection.CreateTable<Item>();
+        connection.CreateTable<DefaultNextEvent>();
+        connection.CreateTable<ChoiceKeyword>();
+        connection.CreateTable<EventChoice>();
+        connection.CreateTable<ChoiceReward>();
+        connection.CreateTable<ChoiceRequirement>();
+    }
+
+    public SQLiteConnection Connection(){
+        return connection;
     }
 }
