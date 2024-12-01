@@ -36,8 +36,8 @@ public class ChoiceKeyword {
 
 [Table("eventChoices")]
 public class EventChoice {
-    [PrimaryKey, Column("eventID")] public int eventID {get; set;}
     [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
+    [Column("eventID")] public int eventID {get; set;}
     [Column("text")] public string text {get; set;}
     [Column("targetEventID")] public int targetEventID {get; set;}
 }
@@ -45,12 +45,12 @@ public class EventChoice {
 [Table("choiceRewards")]
 public class ChoiceReward {
     [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
-    [PrimaryKey, Column("rewardItemID")] public int rewardItemID {get; set;}
+    [Column("rewardItemID")] public int rewardItemID {get; set;}
 }
 
 [Table("choiceRequirements")]
 public class ChoiceRequirement {
     [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
-    [PrimaryKey, Column("requirementItemID")] public int requirementItemID {get; set;}
+    [Column("requirementItemID")] public int requirementItemID {get; set;}
 }
 

@@ -25,7 +25,12 @@ public class DatabaseManager : MonoBehaviour
 
     private void EstablishConnection(){
         connection = new SQLiteConnection(databasePath);
-        if(connection == null) return;
+        if(connection == null){
+            Debug.Log("Connection Null!");
+            return;
+        } 
+
+        Debug.Log("Connection Established!");
         
         // CREATE TABLES BELOW
         connection.CreateTable<GameEvent>();
