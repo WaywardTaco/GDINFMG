@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameEventManager : MonoBehaviour
 {
     private GameEvent currentEvent;
-    private List<EventChoice> currentEventChoices;
+    private List<ExpandedEventChoice> currentEventChoices;
     private int defaultNextEventID = -1;
 
     // Start is called before the first frame update
@@ -23,7 +23,7 @@ public class GameEventManager : MonoBehaviour
 
         // Finds the event with correct Event ID
         GameEvent gameEvent = DatabaseManager.Instance.Connection().Query<GameEvent>(
-            $"SELECT * FROM events WHERE id = {eventID}"
+            $"SELECT * FROM events WHERE id = {eventID};"
         )[0];
 
         if (gameEvent.awaitsChoice){
@@ -31,42 +31,42 @@ public class GameEventManager : MonoBehaviour
             currentEventChoices = loadEventChoices();
         } else {
             currentEventChoices.Clear();
-            // Load Default next event
-            defaultNextEventID = 5; // TODO : Get the defaultNextEvent from the database
-
-
-
-
-
+            // Load Default next event 
+            DefaultNextEvent eventLink = DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
+                $"SELECT * FROM defaultNextEvents WHERE sourceEventID = {gameEvent.id};"
+            )[0];
+            if(eventLink == null)
+                defaultNextEventID = -1;
+            else
+                defaultNextEventID = eventLink.nextEventID;
         }
 
         this.currentEvent = gameEvent;
         displayCurrentEvent();
     }
 
-    private List<EventChoice> loadEventChoices(){
-        List<EventChoice> eventChoices = new List<EventChoice>();
+    private List<ExpandedEventChoice> loadEventChoices(){
+        List<ExpandedEventChoice> eventChoices = new List<ExpandedEventChoice>();
 
-        // TODO : Load Event Choices from the database, use their IDs for loading data
+        // Loads Event Choices from the database, using their IDs for loading data
+        List<EventChoice> retEventChoices = DatabaseManager.Instance.Connection().Query<EventChoice>(
+            $"SELECT * FROM eventChoices WHERE eventID = {currentEvent.id};"
+        );
 
+        foreach(EventChoice eventChoice in retEventChoices){
+            List<string> choiceKeywords = loadKeywords(eventChoice.choiceID);
+            List<int> requiredList = loadRequiredItems(eventChoice.choiceID);
+            List<int> rewardList = loadRewardedItems(eventChoice.choiceID);
 
-
-
-
-        for(int tempChoiceID = 0; tempChoiceID < 2; tempChoiceID++){
-            List<string> choiceKeywords = loadKeywords(tempChoiceID);
-            List<int> requiredList = loadRequiredItems(tempChoiceID);
-            List<int> rewardList = loadRewardedItems(tempChoiceID);
-
-            EventChoice tempEvent = new EventChoice{
-                text = "words",
-                targetEventID = -1,
+            ExpandedEventChoice expEventChoice = new ExpandedEventChoice{
+                text = eventChoice.text,
+                targetEventID = eventChoice.targetEventID,
                 keywords = choiceKeywords,
                 requiredItemIDs = requiredList,
                 rewardedItemIDs = rewardList
             };
 
-            eventChoices.Add(tempEvent);
+            eventChoices.Add(expEventChoice);
         }
 
         return eventChoices;
@@ -75,35 +75,44 @@ public class GameEventManager : MonoBehaviour
     private List<string> loadKeywords(int choiceID){
         List<string> keywords = new List<string>();
 
-        // TODO : Load keywords from the database based on choiceID
-        keywords.Add("Pancakes");
+        // Loads keywords from the database based on choiceID
+        List<ChoiceKeyword> choiceKeys = DatabaseManager.Instance.Connection().Query<ChoiceKeyword>(
+            $"SELECT * FROM choiceKeywords WHERE choiceID = {choiceID};"
+        );
 
-        
-
-
-
+        foreach(ChoiceKeyword choiceKey in choiceKeys){
+            keywords.Add(choiceKey.keyword);
+        }
 
         return keywords;
     }
 
-    private List<int> loadRequiredItems(int ChoiceID){
+    private List<int> loadRequiredItems(int choiceID){
         List<int> requiredList = new List<int>();
         
-        // TODO : Load required item ids from database
-        // requiredList.Add(1);
-
-
+        // Loads required item ids from database
+        List<ChoiceRequirement> retRequiredList = DatabaseManager.Instance.Connection().Query<ChoiceRequirement>(
+            $"SELECT * FROM choiceRequirements WHERE choiceID = {choiceID};"
+        );
+        
+        foreach(ChoiceRequirement choiceReq in retRequiredList){
+            requiredList.Add(choiceReq.requirementItemID);
+        }
 
         return requiredList;
     }   
 
-    private List<int> loadRewardedItems(int ChoiceID){
+    private List<int> loadRewardedItems(int choiceID){
         List<int> rewardList = new List<int>();
         
-        // TODO : Load required item ids from database
-        rewardList.Add(1);
-
-
+        // Loads rewarded item ids from database
+        List<ChoiceReward> retRewardList = DatabaseManager.Instance.Connection().Query<ChoiceReward>(
+            $"SELECT * FROM choiceRewards WHERE choiceID = {choiceID};"
+        );
+        
+        foreach(ChoiceReward choiceReward in retRewardList){
+            rewardList.Add(choiceReward.rewardItemID);
+        }
 
         return rewardList;
     }   
@@ -113,7 +122,7 @@ public class GameEventManager : MonoBehaviour
         string displayText = currentEvent.text;
         
         if(currentEvent.displayChoices){
-            foreach(EventChoice choice in currentEventChoices){
+            foreach(ExpandedEventChoice choice in currentEventChoices){
                 if(playerHasChoiceRequirements(choice)){
                     displayText += choice.text + "\n";
                 }
@@ -146,7 +155,7 @@ public class GameEventManager : MonoBehaviour
             return;
         }
 
-        EventChoice chosenEvent = currentEventChoices[chosenEventIndex];
+        ExpandedEventChoice chosenEvent = currentEventChoices[chosenEventIndex];
         foreach(int itemID in chosenEvent.rewardedItemIDs){
             PlayerItemManager.Instance.giveItem(itemID);
         }
@@ -155,7 +164,7 @@ public class GameEventManager : MonoBehaviour
         loadEvent(chosenEvent.targetEventID);
     }
 
-    private bool playerHasChoiceRequirements(EventChoice choice){
+    private bool playerHasChoiceRequirements(ExpandedEventChoice choice){
         foreach(int itemID in choice.requiredItemIDs){
             if(PlayerItemManager.Instance.getItemCount(itemID) <= 0) return false;
         }
@@ -169,7 +178,7 @@ public class GameEventManager : MonoBehaviour
 
         int length = currentEventChoices.Count;
         for(int i = 0; i < length; i++){
-            EventChoice eventChoice = currentEventChoices[i];
+            ExpandedEventChoice eventChoice = currentEventChoices[i];
             if(!playerHasChoiceRequirements(eventChoice)) continue;
             foreach(string keyword in eventChoice.keywords){
                 foreach(string word in inputWords){
@@ -180,7 +189,7 @@ public class GameEventManager : MonoBehaviour
         return -1;
     }
 
-    private struct EventChoice {
+    private struct ExpandedEventChoice {
         public string text;
         public int targetEventID;
         public List<string> keywords;
