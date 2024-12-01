@@ -23,6 +23,12 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    private void Start(){
+        connection.Query<GameEvent>(
+            $"INSERT INTO events VALUES(2, 'Laguna', 1, 1);"
+        );
+    }
+
     private void EstablishConnection(){
         connection = new SQLiteConnection(databasePath);
         if(connection == null){

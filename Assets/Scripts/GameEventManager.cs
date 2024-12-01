@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameEventManager : MonoBehaviour
 {
     private GameEvent currentEvent;
-    private List<ExpandedEventChoice> currentEventChoices;
+    [SerializeField] private List<ExpandedEventChoice> currentEventChoices = new List<ExpandedEventChoice>();
     private int defaultNextEventID = -1;
 
     // Start is called before the first frame update
@@ -15,7 +15,7 @@ public class GameEventManager : MonoBehaviour
     }
 
     private void Update() {
-        Debug.Log("Event: " + currentEvent.text + " | " + currentEventChoices[0].targetEventID + " | " + currentEventChoices[0].keywords );
+        Debug.Log("Event: " + currentEvent + " |" );
     }
     
     private void loadEvent(int eventID){
@@ -26,12 +26,16 @@ public class GameEventManager : MonoBehaviour
             $"SELECT * FROM events WHERE id = {eventID};"
         )[0];
 
+
         if (gameEvent.awaitsChoice){
             defaultNextEventID = -1;
             currentEventChoices = loadEventChoices();
         } else {
             currentEventChoices.Clear();
             // Load Default next event 
+            Debug.Log(DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
+                $"SELECT * FROM defaultNextEvents WHERE sourceEventID = {gameEvent.id};"
+            ).Count);
             DefaultNextEvent eventLink = DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
                 $"SELECT * FROM defaultNextEvents WHERE sourceEventID = {gameEvent.id};"
             )[0];
