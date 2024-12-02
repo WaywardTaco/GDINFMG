@@ -38,13 +38,15 @@ public class EventChoice {
 
 [Table("choiceRewards")]
 public class ChoiceReward {
-    [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
+    [PrimaryKey, Column("rewardID"), AutoIncrement] public int rewardID {get; set;}
+    [Column("choiceID")] public int choiceID {get; set;}
     [Column("rewardItemID")] public int rewardItemID {get; set;}
 }
 
 [Table("choiceRequirements")]
 public class ChoiceRequirement {
-    [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
+    [PrimaryKey, Column("reqID"), AutoIncrement] public int reqID {get; set;}
+    [Column("choiceID")] public int choiceID {get; set;}
     [Column("requirementItemID")] public int requirementItemID {get; set;}
 }
 
