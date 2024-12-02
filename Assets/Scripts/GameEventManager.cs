@@ -163,8 +163,8 @@ public class GameEventManager : MonoBehaviour
                 EnterAdminMode();
                 return;
             }
-            if(isInAdminMode && string.Compare(input, "admin mode", true) != 0)
-                ExitAdminMode();
+            // if(isInAdminMode && string.Compare(input, "admin mode", true) != 0)
+            //     ExitAdminMode();
         }
 
         if(isInAdminMode){
@@ -220,9 +220,11 @@ public class GameEventManager : MonoBehaviour
     }
 
     private void ProcessAdminModeInput(string input){
-        if(currAdminMode == AdminModeEditModes.ActionSelection){
-            processNormalInput(input);
-            return;
+        Debug.Log("Process Admin");
+        switch(currAdminMode){
+            case AdminModeEditModes.ActionSelection:
+                processNormalInput(input);
+                return;
         }
 
     }
