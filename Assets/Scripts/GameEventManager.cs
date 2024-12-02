@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameEventManager : MonoBehaviour
@@ -11,6 +13,10 @@ public class GameEventManager : MonoBehaviour
     private AdminModeEditModes currAdminMode;
     private int defaultNextEventID = -1;
     private bool isInAdminMode = false;
+
+    private int adminStoredInt;
+    private string adminStoredString;
+    private bool adminStoredBool;
 
     // Start is called before the first frame update
     void Start(){
@@ -39,9 +45,12 @@ public class GameEventManager : MonoBehaviour
             Debug.Log(DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
                 $"SELECT * FROM defaultNextEvents WHERE sourceEventID = {gameEvent.id};"
             ).Count);
-            DefaultNextEvent eventLink = DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
+            DefaultNextEvent eventLink = null;
+            List<DefaultNextEvent> nextEvents = DatabaseManager.Instance.Connection().Query<DefaultNextEvent>(
                 $"SELECT * FROM defaultNextEvents WHERE sourceEventID = {gameEvent.id};"
-            )[0];
+            );
+            if(nextEvents.Count > 0)
+                eventLink = nextEvents[0];
             if(eventLink == null)
                 defaultNextEventID = -1;
             else
@@ -181,19 +190,19 @@ public class GameEventManager : MonoBehaviour
         processNormalInput(input);
     }
 
-    private void processNormalInput(string input){
+    private int processNormalInput(string input){
         Debug.Log("Processing Normal Input");
         if(input.Length == 0){
             Debug.Log("Invalid User Input");
             displayCurrentEvent();
-            return;
+            return -1;
         }
 
         int chosenEventIndex = validateInputToChoiceIndex(input);
         if(chosenEventIndex == -1){
             Debug.Log("Invalid User Input");
             displayCurrentEvent();
-            return;
+            return -1;
         }
 
         ExpandedEventChoice chosenEvent = currentEventChoices[chosenEventIndex];
@@ -203,6 +212,7 @@ public class GameEventManager : MonoBehaviour
         
         Debug.Log("Loading: " + chosenEvent.targetEventID);
         loadEvent(chosenEvent.targetEventID);
+        return chosenEvent.targetEventID;
     }
 
     private void EnterAdminMode(){
@@ -217,14 +227,49 @@ public class GameEventManager : MonoBehaviour
         MonitorTextManager.Instance.SetAdminMode(false);
         this.AdminModeLabel.SetActive(false);
         isInAdminMode = false;
+        loadEvent(1);
     }
 
     private void ProcessAdminModeInput(string input){
         Debug.Log("Process Admin");
         switch(currAdminMode){
             case AdminModeEditModes.ActionSelection:
-                processNormalInput(input);
+                int nextEventID = processNormalInput(input);
+                switch(nextEventID){
+                    case 9998: currAdminMode = AdminModeEditModes.CreatingNewEvent; break;
+                }
                 return;
+            case AdminModeEditModes.CreatingNewEvent:
+                try {
+                    this.adminStoredInt = Int32.Parse(input);
+                } catch {
+                    displayCurrentEvent();
+                    return;
+                }
+                currAdminMode = AdminModeEditModes.WritingNewEventText;
+                loadEvent(9994);
+                return;
+            case AdminModeEditModes.WritingNewEventText:
+                adminStoredString = input;
+                currAdminMode = AdminModeEditModes.AskingIfEventHasChoices;
+                loadEvent(9993);
+                return;
+            case AdminModeEditModes.AskingIfEventHasChoices:
+                if(String.Compare(input, "y", true) == 0 || String.Compare(input, "yes", true) == 0)
+                    return;
+                else if(String.Compare(input, "n", true) == 0|| String.Compare(input, "no", true) == 0){
+
+                    DatabaseManager.Instance.Connection().Query<GameEvent>(
+                        $"INSERT INTO events VALUES({adminStoredInt},\'{adminStoredString}\',0,0);"
+                    );
+                    // currAdminMode  = AdminModeEditModes.AskingForDefaultNextEvent;
+                    ExitAdminMode();
+                    return;
+                } else {
+                    displayCurrentEvent();
+                    return;
+                }
+            
         }
 
     }
