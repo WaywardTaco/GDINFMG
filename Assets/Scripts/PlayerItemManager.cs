@@ -42,5 +42,6 @@ public class PlayerItemManager : MonoBehaviour
 
     public void queryItemInfo(){
         // TODO : Ask the database for the item's info and do something about it ig?
+        
     }
 }

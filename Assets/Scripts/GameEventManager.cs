@@ -31,6 +31,7 @@ public class GameEventManager : MonoBehaviour
     private void loadEvent(int eventID){
         if(eventID == -1) eventID = 1;
 
+
         // Finds the event with correct Event ID
         GameEvent gameEvent = DatabaseManager.Instance.Connection().Query<GameEvent>(
             $"SELECT * FROM events WHERE id = {eventID};"
