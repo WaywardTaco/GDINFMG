@@ -24,9 +24,9 @@ public class DatabaseManager : MonoBehaviour
     }
 
     private void Start(){
-        connection.Query<GameEvent>(
-            $"INSERT INTO events VALUES(1, 'Pancakes', 1, 1);"
-        );
+        // connection.Query<GameEvent>(
+        //     $"INSERT INTO events VALUES(1, 'Pancakes', 1, 1);"
+        // );
     }
 
     private void EstablishConnection(){

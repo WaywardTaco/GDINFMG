@@ -9,13 +9,6 @@ public class GameEvent {
     [Column("awaitsChoice")] public bool awaitsChoice {get; set;}
 }
 
-[Table("choices")]
-public class Choice {
-    [PrimaryKey, Column("id"), AutoIncrement] public int id {get; set;}
-    [Column("text")] public string text {get; set;}
-    [Column("targetEventID")] public int targetEventID {get; set;}
-}
-
 [Table("items")]
 public class Item {
     [PrimaryKey, Column("id"), AutoIncrement] public int id {get; set;}

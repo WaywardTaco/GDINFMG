@@ -136,9 +136,9 @@ public class MonitorTextManager : MonoBehaviour
             if(!char.IsControl(c))
                 this.inputText += c;
         }
-        if (string.IsNullOrEmpty(this.inputText))
-            return;
-        Debug.Log(this.inputText.Length);
+        // if (string.IsNullOrEmpty(this.inputText))
+        //     return;
+        // Debug.Log(this.inputText.Length);
         //if (Input.GetKeyDown(KeyCode.Q))
         //    this.inputText += "Q";
         //if(Input.GetKeyDown(KeyCode.W))

@@ -153,9 +153,16 @@ public class GameEventManager : MonoBehaviour
     }
 
     public void processEventInput(string input){
+        Debug.Log($"{input.Length}");
         if(!currentEvent.awaitsChoice || currentEventChoices.Count == 0){
             Debug.Log("There are no choices!");
             loadEvent(defaultNextEventID);
+            return;
+        }
+
+        if(input.Length == 0){
+            Debug.Log("Invalid User Input");
+            displayCurrentEvent();
             return;
         }
 
