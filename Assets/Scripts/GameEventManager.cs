@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Android.Gradle.Manifest;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GameEventManager : MonoBehaviour
