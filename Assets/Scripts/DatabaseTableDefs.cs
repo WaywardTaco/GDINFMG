@@ -11,14 +11,14 @@ public class GameEvent {
 
 [Table("choices")]
 public class Choice {
-    [PrimaryKey, Column("id")] public int id {get; set;}
+    [PrimaryKey, Column("id"), AutoIncrement] public int id {get; set;}
     [Column("text")] public string text {get; set;}
     [Column("targetEventID")] public int targetEventID {get; set;}
 }
 
 [Table("items")]
 public class Item {
-    [PrimaryKey, Column("id")] public int id {get; set;}
+    [PrimaryKey, Column("id"), AutoIncrement] public int id {get; set;}
     [Column("name")] public string name {get; set;}
 }
 
@@ -36,7 +36,7 @@ public class ChoiceKeyword {
 
 [Table("eventChoices")]
 public class EventChoice {
-    [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
+    [PrimaryKey, Column("choiceID"), AutoIncrement] public int choiceID {get; set;}
     [Column("eventID")] public int eventID {get; set;}
     [Column("text")] public string text {get; set;}
     [Column("targetEventID")] public int targetEventID {get; set;}

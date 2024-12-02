@@ -25,7 +25,7 @@ public class DatabaseManager : MonoBehaviour
 
     private void Start(){
         connection.Query<GameEvent>(
-            $"INSERT INTO events VALUES(2, 'Laguna', 1, 1);"
+            $"INSERT INTO events VALUES(1, 'Pancakes', 1, 1);"
         );
     }
 
@@ -40,7 +40,6 @@ public class DatabaseManager : MonoBehaviour
         
         // CREATE TABLES BELOW
         connection.CreateTable<GameEvent>();
-        connection.CreateTable<Choice>();
         connection.CreateTable<Item>();
         connection.CreateTable<DefaultNextEvent>();
         connection.CreateTable<ChoiceKeyword>();

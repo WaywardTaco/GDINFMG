@@ -26,10 +26,9 @@ public class GameEventManager : MonoBehaviour
             $"SELECT * FROM events WHERE id = {eventID};"
         )[0];
 
-
         if (gameEvent.awaitsChoice){
             defaultNextEventID = -1;
-            currentEventChoices = loadEventChoices();
+            currentEventChoices = loadEventChoices(eventID);
         } else {
             currentEventChoices.Clear();
             // Load Default next event 
@@ -49,12 +48,16 @@ public class GameEventManager : MonoBehaviour
         displayCurrentEvent();
     }
 
-    private List<ExpandedEventChoice> loadEventChoices(){
+    private List<ExpandedEventChoice> loadEventChoices(int eventID){
         List<ExpandedEventChoice> eventChoices = new List<ExpandedEventChoice>();
 
+        
         // Loads Event Choices from the database, using their IDs for loading data
+        Debug.Log(DatabaseManager.Instance.Connection().Query<EventChoice>(
+            $"SELECT * FROM eventChoices WHERE eventID = {eventID};"
+        ).Count);
         List<EventChoice> retEventChoices = DatabaseManager.Instance.Connection().Query<EventChoice>(
-            $"SELECT * FROM eventChoices WHERE eventID = {currentEvent.id};"
+            $"SELECT * FROM eventChoices WHERE eventID = {eventID};"
         );
 
         foreach(EventChoice eventChoice in retEventChoices){
@@ -73,6 +76,7 @@ public class GameEventManager : MonoBehaviour
             eventChoices.Add(expEventChoice);
         }
 
+        Debug.Log(eventChoices.Count);
         return eventChoices;
     }
 
@@ -88,6 +92,8 @@ public class GameEventManager : MonoBehaviour
             keywords.Add(choiceKey.keyword);
         }
 
+
+        Debug.Log(keywords.Count);
         return keywords;
     }
 
@@ -135,10 +141,10 @@ public class GameEventManager : MonoBehaviour
 
         if(currentEvent.awaitsChoice){
             displayText += ">";
-            monitor.SetMonitorText(displayText);
-            StartCoroutine(delayedAwaitInput());
-        } else 
-            monitor.SetMonitorText(displayText);
+        }
+
+        monitor.SetMonitorText(displayText);
+        StartCoroutine(delayedAwaitInput());
     }
 
     private IEnumerator delayedAwaitInput(){
@@ -148,6 +154,7 @@ public class GameEventManager : MonoBehaviour
 
     public void processEventInput(string input){
         if(!currentEvent.awaitsChoice || currentEventChoices.Count == 0){
+            Debug.Log("There are no choices!");
             loadEvent(defaultNextEventID);
             return;
         }
