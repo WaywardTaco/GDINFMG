@@ -23,7 +23,8 @@ public class DefaultNextEvent {
 
 [Table("choiceKeywords")]
 public class ChoiceKeyword {
-    [PrimaryKey, Column("choiceID")] public int choiceID {get; set;}
+    [PrimaryKey, Column("keywordID"), AutoIncrement] public int keywordID {get; set;}
+    [Column("choiceID")] public int choiceID {get; set;}
     [Column("keyword")] public string keyword {get; set;}
 }
 
