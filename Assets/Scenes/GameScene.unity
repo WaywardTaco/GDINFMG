@@ -923,7 +923,7 @@ MonoBehaviour:
   inputText: 
   isTakingInput: 0
   isMirroringInput: 0
-  isDebugMode: 0
+  isAdminMode: 0
   awaitingInputDisplayUnderscorePeriod: 0.5
   currentInputListeners:
     m_PersistentCalls:
@@ -2191,6 +2191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69079ea89c6fbed4c85d927a62375bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AdminModeLabel: {fileID: 146125843}
 --- !u!4 &572970082
 Transform:
   m_ObjectHideFlags: 0

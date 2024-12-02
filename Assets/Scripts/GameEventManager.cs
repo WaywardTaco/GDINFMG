@@ -8,7 +8,7 @@ public class GameEventManager : MonoBehaviour
     private GameEvent currentEvent;
     [SerializeField] private GameObject AdminModeLabel;
     [SerializeField] private List<ExpandedEventChoice> currentEventChoices = new List<ExpandedEventChoice>();
-
+    private AdminModeEditModes currAdminMode;
     private int defaultNextEventID = -1;
     private bool isInAdminMode = false;
 
@@ -19,7 +19,7 @@ public class GameEventManager : MonoBehaviour
     }
 
     private void Update() {
-        Debug.Log("Event: " + currentEvent + " |" );
+        Debug.Log("Event: " + currentEvent.id + " | " + defaultNextEventID );
     }
     
     private void loadEvent(int eventID){
@@ -157,12 +157,20 @@ public class GameEventManager : MonoBehaviour
     }
 
     public void processEventInput(string input){
-        
-        if(currentEvent.id == 1 && string.Compare(input, "admin mode", true) == 0){
-            EnterAdminMode();
-            return;
+
+        if(currentEvent.id == 1){
+            if(!isInAdminMode && string.Compare(input, "admin mode", true) == 0){
+                EnterAdminMode();
+                return;
+            }
+            if(isInAdminMode && string.Compare(input, "admin mode", true) != 0)
+                ExitAdminMode();
         }
 
+        if(isInAdminMode){
+            ProcessAdminModeInput(input);
+            return;
+        }
 
         if(!currentEvent.awaitsChoice || currentEventChoices.Count == 0){
             Debug.Log("There are no choices!");
@@ -170,6 +178,11 @@ public class GameEventManager : MonoBehaviour
             return;
         }
 
+        processNormalInput(input);
+    }
+
+    private void processNormalInput(string input){
+        Debug.Log("Processing Normal Input");
         if(input.Length == 0){
             Debug.Log("Invalid User Input");
             displayCurrentEvent();
@@ -194,13 +207,24 @@ public class GameEventManager : MonoBehaviour
 
     private void EnterAdminMode(){
         isInAdminMode = true;
+        MonitorTextManager.Instance.SetAdminMode(true);
         this.AdminModeLabel.SetActive(true);
-
+        currAdminMode = AdminModeEditModes.ActionSelection;
+        loadEvent(9999);
     }
 
     private void ExitAdminMode(){
+        MonitorTextManager.Instance.SetAdminMode(false);
         this.AdminModeLabel.SetActive(false);
         isInAdminMode = false;
+    }
+
+    private void ProcessAdminModeInput(string input){
+        if(currAdminMode == AdminModeEditModes.ActionSelection){
+            processNormalInput(input);
+            return;
+        }
+
     }
 
     private bool playerHasChoiceRequirements(ExpandedEventChoice choice){
@@ -235,4 +259,32 @@ public class GameEventManager : MonoBehaviour
         public List<int> requiredItemIDs;
         public List<int> rewardedItemIDs;
     }
+
+    private enum AdminModeEditModes {
+        ActionSelection, TestingEvent, TestingEventOffset,
+        CreatingNewEvent, WritingNewEventText, AskingIfEventHasChoices, AskingForDefaultNextEvent, AskingIfEventChoicesDisplay, DoesEventHaveOtherChoice,
+        NewChoiceIDEnter, WritingNewChoiceText, WritingChoiceKeyword, DoesChoiceHaveAnotherKeyword, DoesChoiceHaveReq, DoesChoiceHaveReward,
+        WritingReqID, CreatingItemName
+    }
+    /*
+        9999 main admin menu
+        9998 create new eventChoices event id entry
+        9997 edit eventChoices
+        9996 delete eventChoices
+        9995 edit item
+        9994 blank
+        9993 has choices?
+        9992 default next eventChoices
+        9991 choice id enter
+        9990 displaychoices 
+        9989 choice more keywords
+        9988 choice have req
+        9987 insert reqID
+        9986 more choices
+        9985 item name
+        9984 another reqID
+        9983 reward
+        9982 rewardID
+        9981 another reward
+    */
 }

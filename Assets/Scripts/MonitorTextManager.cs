@@ -16,7 +16,7 @@ public class MonitorTextManager : MonoBehaviour
     [SerializeField] private string inputText;
     [SerializeField] private bool isTakingInput = false;
     [SerializeField] private bool isMirroringInput = false;
-    [SerializeField] private bool isDebugMode;
+    [SerializeField] private bool isAdminMode = false;
     [SerializeField] private float awaitingInputDisplayUnderscorePeriod;
     [SerializeField] private UnityEvent<string> currentInputListeners;
     private bool willEatInput = false;
@@ -41,11 +41,6 @@ public class MonitorTextManager : MonoBehaviour
         // }
         if(isTakingInput)
             this.HandleInputs();
-        if(Input.GetKeyDown(KeyCode.KeypadEnter) && this.isDebugMode){
-            this.isTakingInput = true;
-            this.isMirroringInput = true;
-            this.ClearTerminal();
-        }
         if(isMirroringInput){
             if(this.isTakingInput){
                 if(awaitingInputDisplayUnderscore){
@@ -117,6 +112,10 @@ public class MonitorTextManager : MonoBehaviour
     }
     public string GetText(){
         return this.savedMonitorText;
+    }
+
+    public void SetAdminMode(bool value){
+        this.isAdminMode = value;
     }
 
     private IEnumerator FlipDisplayInputUnderscore(){
@@ -196,25 +195,21 @@ public class MonitorTextManager : MonoBehaviour
         //    this.inputText += " ";
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (isDebugMode)
+            if (isAdminMode)
                 this.inputText += "\n";
             else
                 this.SubmitInput();
         }
         if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (isDebugMode)
+            if (isAdminMode)
                 this.willEatInput = true;
             this.SubmitInput();
         }
         if (Input.GetKeyDown(KeyCode.Backspace) && this.inputText.Length > 0)
         {
-
-            this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);
-           
+            this.inputText = this.inputText.Substring(0, this.inputText.Length - 1);  
         }
-
-        if (!isDebugMode) return;
 
         //if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)){
         //    if(Input.GetKeyDown(KeyCode.BackQuote))
