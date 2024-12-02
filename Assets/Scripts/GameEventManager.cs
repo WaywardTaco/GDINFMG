@@ -6,11 +6,15 @@ using UnityEngine;
 public class GameEventManager : MonoBehaviour
 {
     private GameEvent currentEvent;
+    [SerializeField] private GameObject AdminModeLabel;
     [SerializeField] private List<ExpandedEventChoice> currentEventChoices = new List<ExpandedEventChoice>();
+
     private int defaultNextEventID = -1;
+    private bool isInAdminMode = false;
 
     // Start is called before the first frame update
     void Start(){
+        AdminModeLabel.SetActive(false);
         loadEvent(1);
     }
 
@@ -153,7 +157,13 @@ public class GameEventManager : MonoBehaviour
     }
 
     public void processEventInput(string input){
-        Debug.Log($"{input.Length}");
+        
+        if(currentEvent.id == 1 && string.Compare(input, "admin mode", true) == 0){
+            EnterAdminMode();
+            return;
+        }
+
+
         if(!currentEvent.awaitsChoice || currentEventChoices.Count == 0){
             Debug.Log("There are no choices!");
             loadEvent(defaultNextEventID);
@@ -180,6 +190,17 @@ public class GameEventManager : MonoBehaviour
         
         Debug.Log("Loading: " + chosenEvent.targetEventID);
         loadEvent(chosenEvent.targetEventID);
+    }
+
+    private void EnterAdminMode(){
+        isInAdminMode = true;
+        this.AdminModeLabel.SetActive(true);
+
+    }
+
+    private void ExitAdminMode(){
+        this.AdminModeLabel.SetActive(false);
+        isInAdminMode = false;
     }
 
     private bool playerHasChoiceRequirements(ExpandedEventChoice choice){
